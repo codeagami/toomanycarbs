@@ -1,0 +1,100 @@
+<!--calc.html-->
+<html>
+<head>	
+</head>
+
+<body style="background-color:#D7D2CB";>
+	<h1>BSCalc</h1>
+<input type="radio" name="mealtime" id="breakfast_button"/>Breakfast<br>
+<input type="radio" name="mealtime" id="lunch_button"/>Lunch<br>	
+<input type="radio" name="mealtime" id="dinner_button"/>Dinner
+<br>
+<br>
+Blood Sugar:<br>
+<input type="number" id="measured_blood_sugar" style="font-size: 1em; height: 5em; width: 10em;">
+<br>
+Carbs:<br>
+<input type="number" id="carbs_i_am_eating" style="font-size: 1em; height: 5em; width: 10em;">
+<br>
+<br>
+<button type="button" onclick="calculate()">Calculate</button>
+<br>
+<p id="datetime"></p>
+<br>
+<h2 id="output"style="color:red";>Calc has not run.</h2>
+<br>
+<br>
+<h2>The calculator is currenltly using <br>
+ the following configuration</h2>
+<h2>Breakfast parameters</h2>
+<p id="cf_header">Correction Factor:</p>
+<p id="correction_f_b">25</p>
+<p id="ratio_header">Carb Ratio:</p>
+<p id="c_ratio_b">8</p>
+<h2>Lunch parameters</h2>
+<p id="cf_header">Correction Factor:</p>
+<p id="correction_f_l">25</p>
+<p id="ratio_header">Carb Ratio:</p>
+<p id="c_ratio_l">8</p>
+<h2>Dinner parameters</h2>
+<p id="cf_header">Correction Factor:</p>
+<p id="correction_f_d">27</p>
+<p id="ratio_header">Carb Ratio:</p>
+<p id="c_ratio_d">9</p>
+<p id="cutover_header">Blood Sugar Cutoff:</p>
+<p id="cutover">130</p>
+<h2>Your measurements may vary<br>
+and use of this tool is at your own risk</h2>
+<p id="t1"></p>
+<p id="t2"></p>
+<p id="flag"></p>
+</body>
+<script type="text/javascript">
+       //we need to set the checked buton based on time of day
+	   	var d = new Date();
+        var n = d.getHours();
+		if( n >= 16){
+		  var radiobtn = document.getElementById("dinner_button");
+		  radiobtn.checked = true;
+		} else if (n >= 12){
+          var radiobtn = document.getElementById("lunch_button");
+		  radiobtn.checked = true;
+		} else {
+		  var radiobtn = document.getElementById("breakfast_button");
+		  radiobtn.checked = true;
+		}
+		function calculate() {
+			//This needs to operate based on the checked button			
+			if (document.getElementById("dinner_button").checked){
+			  var correction_factor = document.getElementById("correction_f_d").innerHTML;
+			  var carb_ratio = document.getElementById("c_ratio_d").innerHTML;
+			  var meal = '<h2 style="color:yellow;">Dinner</h2>';
+			}else if (document.getElementById("lunch_button").checked){
+			  var correction_factor = document.getElementById("correction_f_l").innerHTML;
+			  var carb_ratio = document.getElementById("c_ratio_l").innerHTML;
+			  var meal = '<h2 style="color:green;">Lunch</h2>';
+			} else {
+			  var correction_factor = document.getElementById("correction_f_b").innerHTML;
+			  var carb_ratio = document.getElementById("c_ratio_b").innerHTML;
+			  var meal = '<h2 style="color:blue;">Breakfast</h2>';
+			}
+			if (n )
+			var blood_sugar = document.getElementById("measured_blood_sugar").value;
+			var current_carbs = document.getElementById("carbs_i_am_eating").value;
+			var cutoff = Number(document.getElementById("cutover").innerHTML);
+			if (blood_sugar < cutoff){
+				var mod_bloodsugar = 0
+				document.getElementById("flag").innerHTML = "under cutoff";
+
+			}
+			else{
+				var mod_bloodsugar = ((blood_sugar - 100) / correction_factor);
+				document.getElementById("flag").innerHTML = "above cutoff";
+			}
+			var shot_total = (current_carbs / carb_ratio) + mod_bloodsugar;
+			document.getElementById("datetime").innerHTML = meal;
+			document.getElementById("output").innerHTML = shot_total.toFixed(2);
+	}
+	</script>
+
+</html>
